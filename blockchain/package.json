@@ -1,0 +1,9 @@
+{
+	"name": "blockchain",
+	"type": "module",
+	"scripts": {
+		"node_1": "./../apps/node/index.js 3001",
+		"node_2": "./../apps/node/index.js 3002",
+		"node_3": "./../apps/node/index.js 3003"
+	}
+}

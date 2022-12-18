@@ -1,0 +1,79 @@
+Bux
+- pronounced /bʌks/, like bucks
+
+Shitty personal project like usual, I'm just learning how things work :)
+
+Aiming for a blockchain with a Proof of "Involvment" consensus system where
+everything weighs in, kind of like the chinese social credits, but butter ;D
+
+0 fees with hopefully fast enough transactions and a non-decimal currency
+
+
+
+Blockchain [{
+  timestamp: 1672531200000,
+  data: 'genesis',
+  previousHash: null,
+  hash: '212009854311579535777296141861314365191'
+}, {
+  timestamp: 1672617600000,
+  data: { foo: 'bar' },
+  previousHash: '212009854311579535777296141861314365191',
+  hash: '230778752758446379969233194024505355476'
+}, {
+  timestamp: 1672617600000,
+  data: { hello: 'world' },
+  previousHash: '230778752758446379969233194024505355476',
+  hash: '67218212356564404918191596483867438287'
+}]
+
+new Transaction({
+  amount: 10,
+  from: "senders public key",
+  to: "recievers public key"
+})
+
+https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd
+https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=5&page=1&sparkline=true&price_change_percentage=7d
+
+const formatSparkline = (numbers) => {
+    const sevenDaysAgo = moment().subtract(7, 'days').unix();
+    let formattedSparkline = numbers.map((item, index) => {
+        return {
+            x: sevenDaysAgo + (index + 1) * 3600,
+            y: item
+        }
+    })
+    return formattedSparkline;
+}
+const formatMarketData = (data) => {
+    let formattedData = [];
+
+    data.forEach(item => {
+        const formattedSparkline = formatSparkline(item.sparkline_in_7d.price)
+
+        const formattedItem = {
+            ...item,
+            sparkline_in_7d: {
+                price: formattedSparkline
+            }
+        }
+        formattedData.push(formattedItem)
+    })
+    return formattedData;
+}
+
+
+export const getMarketData = async () => {
+    try {
+        const response = await axios.get('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=20&page=1&sparkline=true&price_change_percentage=7d')
+        const data = response.data;
+        const formattedResponse = formatMarketData(data);
+        return formattedResponse;
+    } catch (e) {
+        console.log('====================================');
+        console.log(e.message);
+        console.log('====================================');
+    }
+}
+
